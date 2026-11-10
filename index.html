@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#315c50"><title>پلنر روزانه من</title>
+<style>
+:root{--g:#315c50;--bg:#f2f6f3;--card:#fff;--ink:#20312a;--muted:#718078;--line:#e2eae4;--soft:#e8f1eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;padding:12px}
+main{max-width:760px;margin:auto}.hero{background:linear-gradient(135deg,#315c50,#56836c);color:white;padding:20px;border-radius:20px;margin-bottom:12px}
+h1{font-size:22px;margin:0 0 8px}h2{font-size:16px;margin:0 0 12px}.muted,.hint{color:var(--muted);font-size:12px;line-height:1.8}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin:11px 0}
+nav{display:flex;gap:6px;overflow:auto;padding:4px 0 8px}nav button{white-space:nowrap}
+button{border:0;border-radius:10px;background:var(--g);color:#fff;padding:11px 13px;font:inherit;font-size:13px;cursor:pointer}
+button.alt{background:var(--soft);color:var(--g)}button.red{background:#fff0ef;color:#a33}button:disabled{opacity:.5}
+input,select,textarea{font:inherit;font-size:14px;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fbfdfb;color:var(--ink);width:100%;min-width:0}
+textarea{min-height:75px}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+nav button.active{background:var(--g);color:white}.panel[hidden]{display:none!important}
+.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stat{background:var(--soft);border-radius:12px;padding:12px}.stat b{display:block;font-size:19px;margin-bottom:4px}
+.task{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line)}.task:last-child{border:0}.task input{width:20px;height:20px}.task span{flex:1}.done{text-decoration:line-through;color:#84938a}
+.progress{height:9px;background:#e8eee9;border-radius:10px;overflow:hidden;margin:8px 0}.progress i{display:block;height:100%;background:#69a47d}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;border-bottom:1px solid var(--line);text-align:right}
+.chart{display:flex;align-items:end;gap:4px;height:110px;padding:8px 0}.barcol{flex:1;display:flex;flex-direction:column;justify-content:end;height:100%;text-align:center;font-size:10px;color:var(--muted)}.barcol i{display:block;background:#6d9c7b;border-radius:5px 5px 0 0;min-height:2px}
+.notice{background:#fff8e6;padding:10px;border-radius:10px;font-size:12px;line-height:1.8}
+@media(min-width:560px){.statgrid{grid-template-columns:repeat(4,1fr)}}
+</style></head><body><main>
+<header class="hero"><h1>پلنر روزانه من 🌱</h1><div id="todayText"></div><div class="statgrid" style="margin-top:14px">
+<div class="stat"><b id="todayDone">۰</b><small>انجام‌شده امروز</small></div><div class="stat"><b id="todayTotal">۰</b><small>کل کارهای امروز</small></div><div class="stat"><b id="todayPct">۰٪</b><small>درصد موفقیت امروز</small></div><div class="stat"><b id="monthPct">۰٪</b><small>موفقیت این ماه</small></div></div><div class="progress"><i id="todayBar"></i></div></header>
+<nav>
+<button class="active" data-tab="daily">کارهای روزانه</button><button data-tab="archive">آرشیو و گزارش ماهانه</button><button data-tab="money">درآمد و هزینه</button><button data-tab="goals">اهداف مالی</button><button data-tab="reminders">یادآورها</button><button data-tab="settings">پشتیبان و تنظیمات</button>
+</nav>
+<section class="panel" id="daily">
+<div class="card"><h2>➕ افزودن کار</h2><div class="row"><input id="taskName" placeholder="عنوان کار"><button id="addTask">افزودن</button></div><div class="row" style="margin-top:8px"><select id="taskRepeat"><option value="daily">هر روز تکرار شود</option><option value="once">فقط در تاریخ انتخابی</option></select><input id="taskDate" type="date"></div><p class="hint">تیک هر روز جداگانه ذخیره می‌شود و سوابق روزهای قبل پاک نمی‌شوند.</p></div>
+<div class="card"><div class="row"><h2>برنامه روز انتخابی</h2><input id="viewDate" type="date"></div><div id="tasksList"></div></div>
+<div class="card"><h2>مدیریت کارهای تکراری</h2><div id="recurringList"></div></div>
+</section>
+<section class="panel" id="archive" hidden>
+<div class="card"><h2>📅 گزارش ماهانه</h2><div class="row"><input id="monthPick" type="month"><button class="alt" id="thisMonth">ماه جاری</button></div><div class="statgrid" style="margin-top:10px">
+<div class="stat"><b id="mTasks">۰</b><small>کل موارد برنامه‌ریزی‌شده</small></div><div class="stat"><b id="mDone">۰</b><small>انجام‌شده</small></div><div class="stat"><b id="mMissed">۰</b><small>انجام‌نشده تا پایان روز</small></div><div class="stat"><b id="mRate">۰٪</b><small>درصد موفقیت</small></div></div>
+<h2 style="margin-top:18px">روند عملکرد روزانه</h2><div id="monthChart" class="chart"></div><div id="monthDays"></div></div>
+<div class="card"><h2>مرور ماه</h2><textarea id="monthReview" placeholder="چه چیزهایی خوب پیش رفت؟ چه چیزی باید ماه بعد بهتر شود؟"></textarea><button id="saveReview" style="margin-top:8px">ذخیره مرور ماه</button></div>
+</section>
+<section class="panel" id="money" hidden>
+<div class="card"><h2>💰 ثبت درآمد، هزینه و پس‌انداز</h2><input id="txTitle" placeholder="عنوان؛ مثلاً حقوق، خرید، قبض"><div class="grid" style="margin-top:8px"><select id="txType"><option value="income">درآمد</option><option value="expense">هزینه</option><option value="saving">پس‌انداز</option><option value="investment">سرمایه‌گذاری</option><option value="debt">پرداخت بدهی</option></select><input id="txAmount" type="number" min="1" placeholder="مبلغ به تومان"></div><div class="grid" style="margin-top:8px"><input id="txCategory" placeholder="دسته‌بندی"><input id="txDate" type="date"></div><button id="addTx" style="margin-top:8px">ثبت تراکنش</button></div>
+<div class="card"><h2>خلاصه مالی ماه انتخابی</h2><div class="row"><input id="moneyMonth" type="month"></div><div class="statgrid" style="margin-top:8px"><div class="stat"><b id="sumIncome">۰</b><small>درآمد</small></div><div class="stat"><b id="sumExpense">۰</b><small>هزینه</small></div><div class="stat"><b id="sumSaving">۰</b><small>پس‌انداز</small></div><div class="stat"><b id="sumBalance">۰</b><small>مانده (درآمد منهای هزینه و پس‌انداز)</small></div></div><div id="txList" style="overflow:auto;margin-top:12px"></div></div>
+</section>
+<section class="panel" id="goals" hidden>
+<div class="card"><h2>🎯 هدف‌های مالی و پس‌انداز</h2><input id="goalTitle" placeholder="نام هدف؛ مثلاً خرید وسیله یا پس‌انداز"><div class="grid" style="margin-top:8px"><input id="goalTarget" type="number" min="1" placeholder="مبلغ هدف تومان"><input id="goalCurrent" type="number" min="0" placeholder="مبلغ فعلی تومان"></div><button id="addGoal" style="margin-top:8px">ذخیره هدف</button></div><div class="card"><h2>هدف‌های ثبت‌شده</h2><div id="goalList"></div></div>
+</section>
+<section class="panel" id="reminders" hidden>
+<div class="card"><h2>⏰ یادآور کارها</h2><input id="remTitle" placeholder="عنوان یادآور"><div class="grid" style="margin-top:8px"><input id="remDate" type="date"><input id="remTime" type="time"></div><button id="addReminder" style="margin-top:8px">ثبت یادآور</button><p class="hint">یادآورها در فهرست و هنگام بازکردن پلنر نمایش داده می‌شوند. اعلان دقیق در زمان مقرر، وقتی مرورگر بسته است، به پشتیبانی اعلان زمان‌بندی‌شده و سرویس پس‌زمینه نیاز دارد.</p></div><div class="card"><h2>یادآورهای ثبت‌شده</h2><div id="remList"></div></div></section>
+<section class="panel" id="settings" hidden>
+<div class="card"><h2>پشتیبان اطلاعات</h2><p class="hint">اطلاعات روی همین مرورگر ذخیره می‌شود. مرتب خروجی پشتیبان بگیر؛ پاک‌کردن داده‌های مرورگر ممکن است اطلاعات را حذف کند.</p><div class="row"><button id="export">دریافت فایل پشتیبان</button><label class="alt" style="padding:11px;border-radius:10px;text-align:center">بازیابی پشتیبان<input id="import" type="file" accept="application/json" hidden></label></div></div>
+<div class="notice">نکته: برای حفظ سوابق، همیشه از همان آدرس و همان مرورگر استفاده کن و فایل پشتیبان را در جای امن نگه دار.</div>
+</section>
+<footer class="hint" style="text-align:center;padding:18px">پلنر شخصی تو — داده‌ها روی دستگاه خودت ذخیره می‌شوند.</footer>
+</main>
+<script>
+const KEY='roozaneh-v1', $=id=>document.getElementById(id), fa=n=>Number(n||0).toLocaleString('fa-IR'), today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}, monthNow=()=>today().slice(0,7), money=n=>fa(n)+' تومان';
+let data;try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{data={}}
+data.tasks=Array.isArray(data.tasks)?data.tasks:[];data.checks=data.checks||{};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};
+function persist(){localStorage.setItem(KEY,JSON.stringify(data));renderAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function activeTasks(day){return data.tasks.filter(t=>t.repeat==='daily'?(!t.deletedFrom||day<t.deletedFrom):t.created===day)}
+function completed(day,id){return !!(data.checks[day]||{})[id]}
+function taskRate(day){let a=activeTasks(day),d=a.filter(t=>completed(day,t.id)).length;return {a:a.length,d,p:a.length?Math.round(d/a.length*100):0}}
+function setTab(id){document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='archive')renderMonth();if(id==='money')renderMoney();if(id==='goals')renderGoals();if(id==='reminders')renderReminders()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$('viewDate').value=today();$('taskDate').value=today();$('txDate').value=today();$('monthPick').value=monthNow();$('moneyMonth').value=monthNow();
+$('addTask').onclick=()=>{let n=$('taskName').value.trim();if(!n)return;let day=$('taskDate').value||today();data.tasks.push({id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),name:n,repeat:$('taskRepeat').value,created:day});$('taskName').value='';persist()};
+$('viewDate').onchange=renderTasks;
+function renderTasks(){let day=$('viewDate').value||today(),a=activeTasks(day);$('tasksList').innerHTML=a.length?a.map(t=>`<div class="task"><input type="checkbox" data-task="${esc(t.id)}" ${completed(day,t.id)?'checked':''}><span class="${completed(day,t.id)?'done':''}">${esc(t.name)}</span><button class="alt" data-edit="${esc(t.id)}">ویرایش</button><button class="red" data-remove="${esc(t.id)}">حذف</button></div>`).join(''):'<p class="muted">برای این روز کاری ثبت نشده است.</p>';
+let r=data.tasks.filter(t=>t.repeat==='daily'&&!t.deletedFrom);$('recurringList').innerHTML=r.length?r.map(t=>`<div class="task"><span>${esc(t.name)}</span><button class="alt" data-edit="${esc(t.id)}">ویرایش</button><button class="red" data-stop="${esc(t.id)}">توقف تکرار</button></div>`).join(''):'<p class="muted">کار تکراری ثبت نشده است.</p>'}
+document.addEventListener('change',e=>{if(e.target.dataset.task){let day=$('viewDate').value,id=e.target.dataset.task;data.checks[day]=data.checks[day]||{};data.checks[day][id]=e.target.checked;persist()}});
+document.addEventListener('click',e=>{let id=e.target.dataset.edit;if(id){let t=data.tasks.find(x=>x.id===id),n=prompt('عنوان جدید کار:',t?.name||'');if(n?.trim()){t.name=n.trim();persist()}}
+id=e.target.dataset.remove;if(id&&confirm('این کار و سوابق مربوط به آن حذف شود؟')){data.tasks=data.tasks.filter(t=>t.id!==id);persist()}
+id=e.target.dataset.stop;if(id&&confirm('تکرار این کار از امروز متوقف شود؟ سوابق قبلی حفظ می‌شود.')){let t=data.tasks.find(x=>x.id===id);t.deletedFrom=today();persist()}
+id=e.target.dataset.deltx;if(id){data.tx=data.tx.filter(x=>x.id!==id);persist()}
+id=e.target.dataset.delgoal;if(id){data.goals=data.goals.filter(x=>x.id!==id);persist()}
+id=e.target.dataset.delrem;if(id){data.reminders=data.reminders.filter(x=>x.id!==id);persist()}});
+function renderMonth(){let m=$('monthPick').value||monthNow(),[y,mo]=m.split('-').map(Number),days=new Date(y,mo,0).getDate(),total=0,done=0,miss=0,chart=[];for(let day=1;day<=days;day++){let k=`${y}-${String(mo).padStart(2,'0')}-${String(day).padStart(2,'0')}`,s=taskRate(k);if(k<=today()){total+=s.a;done+=s.d;miss+=s.a-s.d}chart.push({day,p:s.p,k,a:s.a,d:s.d})}
+$('mTasks').textContent=fa(total);$('mDone').textContent=fa(done);$('mMissed').textContent=fa(miss);$('mRate').textContent=fa(total?Math.round(done/total*100):0)+'٪';
+$('monthChart').innerHTML=chart.map(x=>`<div class="barcol" title="${x.k}: ${x.p}٪"><i style="height:${x.p}%"></i>${fa(x.day)}</div>`).join('');
+$('monthDays').innerHTML='<table><thead><tr><th>روز</th><th>کل کار</th><th>انجام‌شده</th><th>درصد</th></tr></thead><tbody>'+chart.filter(x=>x.a||x.k<=today()).map(x=>`<tr><td>${esc(x.k)}</td><td>${fa(x.a)}</td><td>${fa(x.d)}</td><td>${fa(x.p)}٪</td></tr>`).join('')+'</tbody></table>';
+$('monthReview').value=data.reviews[m]||''}
+$('monthPick').onchange=renderMonth;$('thisMonth').onclick=()=>{$('monthPick').value=monthNow();renderMonth()};$('saveReview').onclick=()=>{data.reviews[$('monthPick').value]= $('monthReview').value;persist();alert('مرور ماه ذخیره شد.')};
+$('addTx').onclick=()=>{let title=$('txTitle').value.trim(),amount=Number($('txAmount').value);if(!title||amount<=0)return alert('عنوان و مبلغ معتبر وارد کن.');data.tx.push({id:String(Date.now()),title,amount,type:$('txType').value,category:$('txCategory').value,date:$('txDate').value||today()});$('txTitle').value='';$('txAmount').value='';persist()};
+$('moneyMonth').onchange=renderMoney;
+function renderMoney(){let m=$('moneyMonth').value||monthNow(),arr=data.tx.filter(x=>x.date?.startsWith(m)),s={income:0,expense:0,saving:0};arr.forEach(x=>{if(s[x.type]!==undefined)s[x.type]+=x.amount});$('sumIncome').textContent=money(s.income);$('sumExpense').textContent=money(s.expense);$('sumSaving').textContent=money(s.saving);$('sumBalance').textContent=money(s.income-s.expense-s.saving);
+$('txList').innerHTML=arr.length?'<table><thead><tr><th>تاریخ</th><th>عنوان</th><th>نوع</th><th>مبلغ</th><th></th></tr></thead><tbody>'+arr.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.title)}</td><td>${esc(({income:'درآمد',expense:'هزینه',saving:'پس‌انداز',investment:'سرمایه‌گذاری',debt:'بدهی'})[x.type]||x.type)}</td><td>${money(x.amount)}</td><td><button class="red" data-deltx="${x.id}">حذف</button></td></tr>`).join('')+'</tbody></table>':'<p class="muted">برای این ماه تراکنشی ثبت نشده است.</p>'}
+$('addGoal').onclick=()=>{let title=$('goalTitle').value.trim(),target=Number($('goalTarget').value),current=Number($('goalCurrent').value||0);if(!title||target<=0)return alert('نام هدف و مبلغ هدف را وارد کن.');data.goals.push({id:String(Date.now()),title,target,current});$('goalTitle').value='';$('goalTarget').value='';$('goalCurrent').value='';persist()};
+function renderGoals(){$('goalList').innerHTML=data.goals.length?data.goals.map(g=>{let p=Math.min(100,Math.round(g.current/g.target*100));return `<div class="card"><b>${esc(g.title)}</b><p class="muted">${money(g.current)} از ${money(g.target)} — ${p}٪</p><div class="progress"><i style="width:${p}%"></i></div><div class="row"><input type="number" min="0" id="gc${g.id}" placeholder="مبلغ فعلی جدید"><button class="alt" data-updategoal="${g.id}">به‌روزرسانی</button><button class="red" data-delgoal="${g.id}">حذف</button></div></div>`}).join(''):'<p class="muted">هنوز هدفی ثبت نشده است.</p>'}
+document.addEventListener('click',e=>{let id=e.target.dataset.updategoal;if(id){let g=data.goals.find(x=>x.id===id),v=Number($('gc'+id).value);if(v>=0){g.current=v;persist()}}});
+$('addReminder').onclick=()=>{let title=$('remTitle').value.trim(),date=$('remDate').value;if(!title||!date)return alert('عنوان و تاریخ یادآور را وارد کن.');data.reminders.push({id:String(Date.now()),title,date,time:$('remTime').value||''});$('remTitle').value='';persist()};
+function renderReminders(){$('remList').innerHTML=data.reminders.length?data.reminders.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(r=>`<div class="task"><span>${esc(r.title)}<small class="muted" style="display:block">${esc(r.date)} ${esc(r.time)}</small></span><button class="red" data-delrem="${r.id}">حذف</button></div>`).join(''):'<p class="muted">یادآوری ثبت نشده است.</p>'}
+$('export').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='planner-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.tasks)||!x.checks)throw 0;data={...data,...x};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};persist();alert('پشتیبان بازیابی شد.')}catch{alert('فایل پشتیبان معتبر نیست.')}e.target.value=''};
+function renderAll(){let s=taskRate(today());$('todayText').textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date());$('todayDone').textContent=fa(s.d);$('todayTotal').textContent=fa(s.a);$('todayPct').textContent=fa(s.p)+'٪';$('todayBar').style.width=s.p+'%';let m=monthNow(),tot=0,dn=0;Object.keys(data.checks).filter(k=>k.startsWith(m)).forEach(k=>{let q=taskRate(k);tot+=q.a;dn+=q.d});$('monthPct').textContent=fa(tot?Math.round(dn/tot*100):0)+'٪';renderTasks();if(!$('archive').hidden)renderMonth();if(!$('money').hidden)renderMoney();if(!$('goals').hidden)renderGoals();if(!$('reminders').hidden)renderReminders()}
+renderAll();
+</script></body></html>
