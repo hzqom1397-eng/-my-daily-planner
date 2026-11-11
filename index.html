@@ -21,6 +21,7 @@ nav button.active{background:var(--g);color:white}.panel[hidden]{display:none!im
 table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;border-bottom:1px solid var(--line);text-align:right}
 .chart{display:flex;align-items:end;gap:4px;height:110px;padding:8px 0}.barcol{flex:1;display:flex;flex-direction:column;justify-content:end;height:100%;text-align:center;font-size:10px;color:var(--muted)}.barcol i{display:block;background:#6d9c7b;border-radius:5px 5px 0 0;min-height:2px}
 .notice{background:#fff8e6;padding:10px;border-radius:10px;font-size:12px;line-height:1.8}
+.color-control{height:48px;padding:4px;cursor:pointer}
 @media(min-width:560px){.statgrid{grid-template-columns:repeat(4,1fr)}}
 </style></head><body><main>
 <header class="hero"><h1>پلنر روزانه من 🌱</h1><div id="todayText"></div><div class="statgrid" style="margin-top:14px">
@@ -50,6 +51,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;b
 <div class="card"><h2>⏰ یادآور کارها</h2><input id="remTitle" placeholder="عنوان یادآور"><div class="grid" style="margin-top:8px"><input id="remDate" type="date"><input id="remTime" type="time"></div><button id="addReminder" style="margin-top:8px">ثبت یادآور</button><p class="hint">یادآورها در فهرست و هنگام بازکردن پلنر نمایش داده می‌شوند. اعلان دقیق در زمان مقرر، وقتی مرورگر بسته است، به پشتیبانی اعلان زمان‌بندی‌شده و سرویس پس‌زمینه نیاز دارد.</p></div><div class="card"><h2>یادآورهای ثبت‌شده</h2><div id="remList"></div></div></section>
 <section class="panel" id="appearance" hidden>
 <div class="card"><h2>🎨 رنگ پلنر</h2><p class="hint">رنگ دلخواهت را انتخاب کن؛ تغییرات فوراً اعمال و ذخیره می‌شوند.</p><div class="grid"><button type="button" class="theme-choice" data-theme="green">سبز</button><button type="button" class="theme-choice" data-theme="blue">آبی</button><button type="button" class="theme-choice" data-theme="purple">بنفش</button><button type="button" class="theme-choice" data-theme="rose">صورتی</button><button type="button" class="theme-choice" data-theme="dark">تیره</button><button type="button" class="theme-choice" data-theme="sand">کرم</button></div></div>
+<div class="card"><h2>🖌️ انتخاب رنگ نوشته‌ها</h2><p class="hint">رنگ متن را جدا از رنگ پس‌زمینه انتخاب کن؛ تغییرات فوراً ذخیره می‌شوند.</p><input id="fontColorPick" class="color-control" type="color" value="#20312a" aria-label="انتخاب رنگ نوشته‌ها"><div class="row" style="margin-top:8px"><button type="button" class="alt" id="resetFontColor">بازگشت به رنگ پیش‌فرض</button><span class="hint" id="fontColorLabel">رنگ انتخابی</span></div></div>
 <div class="card"><h2>🔠 اندازه نوشته‌ها</h2><label for="fontSizePick" class="hint">اندازه متن: <b id="fontSizeLabel">۱۰۰٪</b></label><input id="fontSizePick" type="range" min="85" max="125" step="5" value="100"><div class="row"><span class="hint">کوچک</span><span class="hint" style="text-align:left">بزرگ</span></div><p class="hint">اندازه انتخابی برای نوشته‌های پلنر ذخیره می‌شود.</p></div>
 </section>
 <section class="panel" id="settings" hidden>
@@ -70,9 +72,22 @@ function taskRate(day){let a=activeTasks(day),d=a.filter(t=>completed(day,t.id))
 function setTab(id){document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='archive')renderMonth();if(id==='money')renderMoney();if(id==='goals')renderGoals();if(id==='reminders')renderReminders();if(id==='appearance')renderAppearance()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 const themes={green:{g:'#315c50',bg:'#f2f6f3',card:'#ffffff',ink:'#20312a',muted:'#718078',line:'#e2eae4',soft:'#e8f1eb'},blue:{g:'#285b8e',bg:'#eff5fb',card:'#ffffff',ink:'#1d2e40',muted:'#687b8e',line:'#dce7f1',soft:'#e5eff9'},purple:{g:'#68468b',bg:'#f5f0fa',card:'#ffffff',ink:'#30243d',muted:'#81738e',line:'#e8def0',soft:'#eee5f6'},rose:{g:'#a34f69',bg:'#fbf1f4',card:'#ffffff',ink:'#3e2730',muted:'#8d737c',line:'#efdee4',soft:'#f7e7ec'},dark:{g:'#83b7a0',bg:'#17211e',card:'#22302b',ink:'#edf5f0',muted:'#a9b9b0',line:'#3a4b43',soft:'#2c4037'},sand:{g:'#8a6740',bg:'#f7f2e9',card:'#fffdf8',ink:'#382f24',muted:'#887b68',line:'#e9dfcf',soft:'#f1e8d9'}};
-function applyAppearance(){let a=data.appearance||{};let t=themes[a.theme]||themes.green;let root=document.documentElement;Object.entries(t).forEach(([k,v])=>root.style.setProperty('--'+k,v));document.body.style.zoom=String((a.fontSize||100)/100);$('fontSizePick').value=a.fontSize||100;$('fontSizeLabel').textContent=fa(a.fontSize||100)+'٪';document.querySelectorAll('.theme-choice').forEach(b=>{let c=themes[b.dataset.theme];b.style.background=c.g;b.style.color=b.dataset.theme==='dark'?'#fff':(b.dataset.theme==='sand'?'#fff':'#fff');b.style.border=(a.theme||'green')===b.dataset.theme?'3px solid var(--ink)':'2px solid transparent'})}
+function applyAppearance(){
+ let a=data.appearance||{},t=themes[a.theme]||themes.green,root=document.documentElement;
+ Object.entries(t).forEach(([k,v])=>root.style.setProperty('--'+k,v));
+ const chosenFontColor=a.fontColor||t.ink;
+ root.style.setProperty('--ink',chosenFontColor);
+ document.body.style.zoom=String((a.fontSize||100)/100);
+ $('fontSizePick').value=a.fontSize||100;
+ $('fontSizeLabel').textContent=fa(a.fontSize||100)+'٪';
+ $('fontColorPick').value=chosenFontColor;
+ $('fontColorLabel').textContent=chosenFontColor;
+ document.querySelectorAll('.theme-choice').forEach(b=>{let c=themes[b.dataset.theme];b.style.background=c.g;b.style.color='#fff';b.style.border=(a.theme||'green')===b.dataset.theme?'3px solid var(--ink)':'2px solid transparent'});
+}
 function renderAppearance(){applyAppearance()}
 document.querySelectorAll('.theme-choice').forEach(b=>b.addEventListener('click',()=>{data.appearance=data.appearance||{};data.appearance.theme=b.dataset.theme;localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()}));
+$('fontColorPick').addEventListener('input',e=>{data.appearance=data.appearance||{};data.appearance.fontColor=e.target.value;localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()});
+$('resetFontColor').addEventListener('click',()=>{data.appearance=data.appearance||{};delete data.appearance.fontColor;localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()});
 $('fontSizePick').addEventListener('input',e=>{data.appearance=data.appearance||{};data.appearance.fontSize=Number(e.target.value);localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()});
 
 $('viewDate').value=today();$('taskDate').value=today();$('txDate').value=today();$('monthPick').value=monthNow();$('moneyMonth').value=monthNow();
