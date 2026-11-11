@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#315c50"><title>پلنر روزانه من</title>
+<meta name="theme-color" content="#315c50"><meta name="description" content="پلنر روزانه با آرشیو ماهانه و مدیریت مالی"><link rel="manifest" href="./manifest.webmanifest"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>پلنر روزانه من</title>
 <style>
 :root{--g:#315c50;--bg:#f2f6f3;--card:#fff;--ink:#20312a;--muted:#718078;--line:#e2eae4;--soft:#e8f1eb}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;padding:12px}
@@ -26,7 +26,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;b
 <header class="hero"><h1>پلنر روزانه من 🌱</h1><div id="todayText"></div><div class="statgrid" style="margin-top:14px">
 <div class="stat"><b id="todayDone">۰</b><small>انجام‌شده امروز</small></div><div class="stat"><b id="todayTotal">۰</b><small>کل کارهای امروز</small></div><div class="stat"><b id="todayPct">۰٪</b><small>درصد موفقیت امروز</small></div><div class="stat"><b id="monthPct">۰٪</b><small>موفقیت این ماه</small></div></div><div class="progress"><i id="todayBar"></i></div></header>
 <nav>
-<button class="active" data-tab="daily">کارهای روزانه</button><button data-tab="archive">آرشیو و گزارش ماهانه</button><button data-tab="money">درآمد و هزینه</button><button data-tab="goals">اهداف مالی</button><button data-tab="reminders">یادآورها</button><button data-tab="settings">پشتیبان و تنظیمات</button>
+<button class="active" data-tab="daily">کارهای روزانه</button><button data-tab="archive">آرشیو و گزارش ماهانه</button><button data-tab="money">درآمد و هزینه</button><button data-tab="goals">اهداف مالی</button><button data-tab="reminders">یادآورها</button><button data-tab="appearance">رنگ و اندازه متن</button><button data-tab="settings">پشتیبان و تنظیمات</button>
 </nav>
 <section class="panel" id="daily">
 <div class="card"><h2>➕ افزودن کار</h2><div class="row"><input id="taskName" placeholder="عنوان کار"><button id="addTask">افزودن</button></div><div class="row" style="margin-top:8px"><select id="taskRepeat"><option value="daily">هر روز تکرار شود</option><option value="once">فقط در تاریخ انتخابی</option></select><input id="taskDate" type="date"></div><p class="hint">تیک هر روز جداگانه ذخیره می‌شود و سوابق روزهای قبل پاک نمی‌شوند.</p></div>
@@ -48,6 +48,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;b
 </section>
 <section class="panel" id="reminders" hidden>
 <div class="card"><h2>⏰ یادآور کارها</h2><input id="remTitle" placeholder="عنوان یادآور"><div class="grid" style="margin-top:8px"><input id="remDate" type="date"><input id="remTime" type="time"></div><button id="addReminder" style="margin-top:8px">ثبت یادآور</button><p class="hint">یادآورها در فهرست و هنگام بازکردن پلنر نمایش داده می‌شوند. اعلان دقیق در زمان مقرر، وقتی مرورگر بسته است، به پشتیبانی اعلان زمان‌بندی‌شده و سرویس پس‌زمینه نیاز دارد.</p></div><div class="card"><h2>یادآورهای ثبت‌شده</h2><div id="remList"></div></div></section>
+<section class="panel" id="appearance" hidden>
+<div class="card"><h2>🎨 رنگ پلنر</h2><p class="hint">رنگ دلخواهت را انتخاب کن؛ تغییرات فوراً اعمال و ذخیره می‌شوند.</p><div class="grid"><button type="button" class="theme-choice" data-theme="green">سبز</button><button type="button" class="theme-choice" data-theme="blue">آبی</button><button type="button" class="theme-choice" data-theme="purple">بنفش</button><button type="button" class="theme-choice" data-theme="rose">صورتی</button><button type="button" class="theme-choice" data-theme="dark">تیره</button><button type="button" class="theme-choice" data-theme="sand">کرم</button></div></div>
+<div class="card"><h2>🔠 اندازه نوشته‌ها</h2><label for="fontSizePick" class="hint">اندازه متن: <b id="fontSizeLabel">۱۰۰٪</b></label><input id="fontSizePick" type="range" min="85" max="125" step="5" value="100"><div class="row"><span class="hint">کوچک</span><span class="hint" style="text-align:left">بزرگ</span></div><p class="hint">اندازه انتخابی برای نوشته‌های پلنر ذخیره می‌شود.</p></div>
+</section>
 <section class="panel" id="settings" hidden>
 <div class="card"><h2>پشتیبان اطلاعات</h2><p class="hint">اطلاعات روی همین مرورگر ذخیره می‌شود. مرتب خروجی پشتیبان بگیر؛ پاک‌کردن داده‌های مرورگر ممکن است اطلاعات را حذف کند.</p><div class="row"><button id="export">دریافت فایل پشتیبان</button><label class="alt" style="padding:11px;border-radius:10px;text-align:center">بازیابی پشتیبان<input id="import" type="file" accept="application/json" hidden></label></div></div>
 <div class="notice">نکته: برای حفظ سوابق، همیشه از همان آدرس و همان مرورگر استفاده کن و فایل پشتیبان را در جای امن نگه دار.</div>
@@ -57,14 +61,20 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 5px;b
 <script>
 const KEY='roozaneh-v1', $=id=>document.getElementById(id), fa=n=>Number(n||0).toLocaleString('fa-IR'), today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}, monthNow=()=>today().slice(0,7), money=n=>fa(n)+' تومان';
 let data;try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{data={}}
-data.tasks=Array.isArray(data.tasks)?data.tasks:[];data.checks=data.checks||{};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};
+data.tasks=Array.isArray(data.tasks)?data.tasks:[];data.checks=data.checks||{};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};data.appearance=data.appearance||{};
 function persist(){localStorage.setItem(KEY,JSON.stringify(data));renderAll()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function activeTasks(day){return data.tasks.filter(t=>t.repeat==='daily'?(!t.deletedFrom||day<t.deletedFrom):t.created===day)}
 function completed(day,id){return !!(data.checks[day]||{})[id]}
 function taskRate(day){let a=activeTasks(day),d=a.filter(t=>completed(day,t.id)).length;return {a:a.length,d,p:a.length?Math.round(d/a.length*100):0}}
-function setTab(id){document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='archive')renderMonth();if(id==='money')renderMoney();if(id==='goals')renderGoals();if(id==='reminders')renderReminders()}
+function setTab(id){document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==id);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='archive')renderMonth();if(id==='money')renderMoney();if(id==='goals')renderGoals();if(id==='reminders')renderReminders();if(id==='appearance')renderAppearance()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+const themes={green:{g:'#315c50',bg:'#f2f6f3',card:'#ffffff',ink:'#20312a',muted:'#718078',line:'#e2eae4',soft:'#e8f1eb'},blue:{g:'#285b8e',bg:'#eff5fb',card:'#ffffff',ink:'#1d2e40',muted:'#687b8e',line:'#dce7f1',soft:'#e5eff9'},purple:{g:'#68468b',bg:'#f5f0fa',card:'#ffffff',ink:'#30243d',muted:'#81738e',line:'#e8def0',soft:'#eee5f6'},rose:{g:'#a34f69',bg:'#fbf1f4',card:'#ffffff',ink:'#3e2730',muted:'#8d737c',line:'#efdee4',soft:'#f7e7ec'},dark:{g:'#83b7a0',bg:'#17211e',card:'#22302b',ink:'#edf5f0',muted:'#a9b9b0',line:'#3a4b43',soft:'#2c4037'},sand:{g:'#8a6740',bg:'#f7f2e9',card:'#fffdf8',ink:'#382f24',muted:'#887b68',line:'#e9dfcf',soft:'#f1e8d9'}};
+function applyAppearance(){let a=data.appearance||{};let t=themes[a.theme]||themes.green;let root=document.documentElement;Object.entries(t).forEach(([k,v])=>root.style.setProperty('--'+k,v));document.body.style.zoom=String((a.fontSize||100)/100);$('fontSizePick').value=a.fontSize||100;$('fontSizeLabel').textContent=fa(a.fontSize||100)+'٪';document.querySelectorAll('.theme-choice').forEach(b=>{let c=themes[b.dataset.theme];b.style.background=c.g;b.style.color=b.dataset.theme==='dark'?'#fff':(b.dataset.theme==='sand'?'#fff':'#fff');b.style.border=(a.theme||'green')===b.dataset.theme?'3px solid var(--ink)':'2px solid transparent'})}
+function renderAppearance(){applyAppearance()}
+document.querySelectorAll('.theme-choice').forEach(b=>b.addEventListener('click',()=>{data.appearance=data.appearance||{};data.appearance.theme=b.dataset.theme;localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()}));
+$('fontSizePick').addEventListener('input',e=>{data.appearance=data.appearance||{};data.appearance.fontSize=Number(e.target.value);localStorage.setItem(KEY,JSON.stringify(data));applyAppearance()});
+
 $('viewDate').value=today();$('taskDate').value=today();$('txDate').value=today();$('monthPick').value=monthNow();$('moneyMonth').value=monthNow();
 $('addTask').onclick=()=>{let n=$('taskName').value.trim();if(!n)return;let day=$('taskDate').value||today();data.tasks.push({id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),name:n,repeat:$('taskRepeat').value,created:day});$('taskName').value='';persist()};
 $('viewDate').onchange=renderTasks;
@@ -93,7 +103,8 @@ document.addEventListener('click',e=>{let id=e.target.dataset.updategoal;if(id){
 $('addReminder').onclick=()=>{let title=$('remTitle').value.trim(),date=$('remDate').value;if(!title||!date)return alert('عنوان و تاریخ یادآور را وارد کن.');data.reminders.push({id:String(Date.now()),title,date,time:$('remTime').value||''});$('remTitle').value='';persist()};
 function renderReminders(){$('remList').innerHTML=data.reminders.length?data.reminders.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(r=>`<div class="task"><span>${esc(r.title)}<small class="muted" style="display:block">${esc(r.date)} ${esc(r.time)}</small></span><button class="red" data-delrem="${r.id}">حذف</button></div>`).join(''):'<p class="muted">یادآوری ثبت نشده است.</p>'}
 $('export').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='planner-backup.json';a.click();URL.revokeObjectURL(a.href)};
-$('import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.tasks)||!x.checks)throw 0;data={...data,...x};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};persist();alert('پشتیبان بازیابی شد.')}catch{alert('فایل پشتیبان معتبر نیست.')}e.target.value=''};
+$('import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.tasks)||!x.checks)throw 0;data={...data,...x};data.tx=data.tx||[];data.goals=data.goals||[];data.reminders=data.reminders||[];data.reviews=data.reviews||{};data.appearance=data.appearance||{};persist();alert('پشتیبان بازیابی شد.')}catch{alert('فایل پشتیبان معتبر نیست.')}e.target.value=''};
 function renderAll(){let s=taskRate(today());$('todayText').textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date());$('todayDone').textContent=fa(s.d);$('todayTotal').textContent=fa(s.a);$('todayPct').textContent=fa(s.p)+'٪';$('todayBar').style.width=s.p+'%';let m=monthNow(),tot=0,dn=0;Object.keys(data.checks).filter(k=>k.startsWith(m)).forEach(k=>{let q=taskRate(k);tot+=q.a;dn+=q.d});$('monthPct').textContent=fa(tot?Math.round(dn/tot*100):0)+'٪';renderTasks();if(!$('archive').hidden)renderMonth();if(!$('money').hidden)renderMoney();if(!$('goals').hidden)renderGoals();if(!$('reminders').hidden)renderReminders()}
-renderAll();
+renderAll();applyAppearance();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.log('Service worker:',err)));}
 </script></body></html>
